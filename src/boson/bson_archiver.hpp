@@ -1321,6 +1321,13 @@ inline void CEREAL_LOAD_FUNCTION_NAME(BSONInputArchive& ar, T& t) {
     ar.loadValue(t);
 }
 
+template <>
+inline void CEREAL_LOAD_FUNCTION_NAME(BSONInputArchive &ar, float& t) {
+    double d;
+    ar.loadValue(d);
+    t = static_cast<float>(d);
+}
+
 // saving string to BSON
 template <class CharT, class Traits, class Alloc>
 inline void CEREAL_SAVE_FUNCTION_NAME(BSONOutputArchive& ar,
