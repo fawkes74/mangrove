@@ -339,6 +339,17 @@ class BSONOutputArchive : public cereal::OutputArchive<BSONOutputArchive> {
         _bsonBuilder.append(bsoncxx::types::b_date{tp});
     }
 
+
+    void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
+    {
+      setNextName(name ? name : "bin");
+      writeName();
+
+      _bsonBuilder.append(bsoncxx::types::b_binary{bsoncxx::binary_sub_type::k_binary,
+                                                   static_cast<uint32_t>(size),
+                                                   reinterpret_cast<const unsigned char*>(data)});
+    }
+
     /**
      * Write the name of the upcoming element and prepare object/array state.
      * Since writeName is called for every value that is output, regardless of
@@ -893,6 +904,19 @@ class BSONInputArchive : public cereal::InputArchive<BSONInputArchive> {
                 return;
         }
     }
+
+    void loadBinaryValue( void * data, size_t size, const char * name = nullptr )
+    {
+      startRootElementIfRoot();
+      setNextName(name ? name : "bin");
+
+      bsoncxx::types::b_binary bin;
+      loadValue(bin);
+
+      std::memcpy(data, bin.bytes, std::min(static_cast<uint32_t>(size), bin.size));
+
+      finishRootElementIfRootElement();
+   }
 
    private:
     // The key name of the next element being searched.
