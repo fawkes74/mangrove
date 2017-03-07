@@ -28,7 +28,7 @@ namespace boson {
 BOSON_INLINE_NAMESPACE_BEGIN
 
 bson_output_streambuf::bson_output_streambuf(document_callback cb)
-    : _cb(cb), _data(reinterpret_cast<uint8_t*>(nullptr), [](uint8_t *) {}), _len(0), _bytes_read(0) {
+    : _cb(cb), _data(static_cast<uint8_t*>(nullptr), [](uint8_t *) {}), _len(0), _bytes_read(0) {
 }
 
 int bson_output_streambuf::underflow() {
