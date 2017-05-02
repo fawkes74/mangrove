@@ -339,6 +339,10 @@ class BSONOutputArchive : public cereal::OutputArchive<BSONOutputArchive> {
         _bsonBuilder.append(bsoncxx::types::b_date{tp});
     }
 
+    void saveValue(const unsigned int val) {
+        _bsonBuilder.append(static_cast<std::int32_t>(val));
+    }
+
 
     void saveBinaryValue( const void * data, size_t size, const char * name = nullptr )
     {
@@ -828,6 +832,7 @@ class BSONInputArchive : public cereal::InputArchive<BSONInputArchive> {
     BOSON_NON_BSON_LOAD_VALUE_FUNC(std::int32_t, int32)
     BOSON_NON_BSON_LOAD_VALUE_FUNC(std::int64_t, int64)
     BOSON_NON_BSON_LOAD_VALUE_FUNC(double, double)
+    BOSON_NON_BSON_LOAD_VALUE_FUNC(unsigned, int32)
 
 #undef BOSON_NON_BSON_LOAD_VALUE_FUNC
 
